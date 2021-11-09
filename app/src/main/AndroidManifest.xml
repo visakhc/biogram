@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Biogram"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".SearchActivity"
+            android:exported="true" />
+        <activity
             android:name=".search"
             android:exported="true" />
         <activity

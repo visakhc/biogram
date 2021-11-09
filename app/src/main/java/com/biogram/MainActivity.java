@@ -223,7 +223,7 @@ namemailnumset();
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String fbid= Objects.requireNonNull(snapshot.getValue()).toString();
                 if(fbid.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"woah...darkmatter is here...., but where's fb",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"woah...founf darkmatter........., but where's fb",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String url = "https://www.facebook.com/"+fbid;

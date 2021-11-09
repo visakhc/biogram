@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +33,7 @@ public class login extends AppCompatActivity {
     private String mVerificationId;
     private static final String TAG="MAIN_TAG";
     private FirebaseAuth firebaseAuth;
-
+    public DatabaseReference root;
     //progress bar dialog
     private ProgressDialog pd;
 
@@ -47,8 +49,8 @@ public class login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-       // FirebaseDatabase db = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
-      //  DatabaseReference root = db.getReference("users");
+       FirebaseDatabase db = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
+    root = db.getReference();
 
         //all editTexts
         ed1 = findViewById(R.id.phonenum);
@@ -244,6 +246,9 @@ public class login extends AppCompatActivity {
                     // after successful signin
                     pd.dismiss();
                     String phone= Objects.requireNonNull(firebaseAuth.getCurrentUser()).getPhoneNumber();
+                    assert phone != null;
+                    phone=phone.replace("+91","");
+                    root.child("root").child("users").child(phone).child("id").setValue(phone);
                     Toast.makeText(login.this,"Logged in as"+phone,Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
