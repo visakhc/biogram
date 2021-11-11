@@ -42,7 +42,7 @@ ArrayList<String> mContacts;
         super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_search);
 
-        b = findViewById(R.id.button);
+        b = findViewById(R.id.homepage);
         t = findViewById(R.id.searchphone);
         mRecyclerView=findViewById(R.id.recycler_view);
         mContacts=new ArrayList<>();

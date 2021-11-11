@@ -1,5 +1,6 @@
 package com.biogram;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -130,6 +131,12 @@ public class HomePage extends AppCompatActivity implements MainAdapter.OnEachLis
 
     @Override
     public void OnEachClick(int position) {
-        Toast.makeText(getApplicationContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+        //intent to profile mainactivity here
+        String num=frndnum.get(position);
+      Intent i = new Intent(HomePage.this,profile.class);
+        i.putExtra("phone",num);
+        i.putExtra("from","search");
+        startActivity(i);
+
     }
 }

@@ -2,7 +2,22 @@ package com.biogram;
 
 public class Users {
     public String id;
-   // public String imageurl;
+    public String name;
+    // public String imageurl;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Users(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Users(){
     }
     public String getId() {
@@ -14,16 +29,6 @@ public class Users {
     }
 
 
-    //public String getImageurl() {
-      //  return imageurl;
-    //}
 
-  //  public void setImageurl(String image) {
-        //this.imageurl = image;
- //   }
 
-    public Users(String id) {
-        this.id = id;
-      //  this.imageurl = imageurl;
-    }
 }

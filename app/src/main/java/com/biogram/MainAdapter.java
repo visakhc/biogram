@@ -57,9 +57,10 @@ import java.util.ArrayList;
 
             @Override
             public void onClick(View v) {
-                OnEachListener.OnEachClick(getAdapterPosition());
+
+                OnEachListener.OnEachClick(getBindingAdapterPosition());
             }
-        }
+                    }
         public interface OnEachListener{
             void OnEachClick(int position);
         }

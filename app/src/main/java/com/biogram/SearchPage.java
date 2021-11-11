@@ -1,6 +1,7 @@
 package com.biogram;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -81,7 +82,7 @@ EditText mSearchField;
 
             @Override
             protected void onBindViewHolder(SearchPage.UsersViewHolder holder, int position, Users model) {
-                holder.setDetails(getApplicationContext(), model.getId());
+                holder.setDetails(getApplicationContext(),model.getName(),model.getId());
             }
         };
 
@@ -90,17 +91,37 @@ EditText mSearchField;
 
     }
 
-    public static class UsersViewHolder extends RecyclerView.ViewHolder {
+
+    public class UsersViewHolder extends RecyclerView.ViewHolder {
         View mView;
         public UsersViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //String pos= String.valueOf(getBindingAdapterPosition());
+                    TextView user_name = mView.findViewById(R.id.name);
+
+                    String n=user_name.getText().toString();
+                    //intent to mainActivity here
+                    Intent i = new Intent(SearchPage.this,profile.class);
+                    i.putExtra("phone",n);
+                    i.putExtra("from","search");
+                    startActivity(i);
+
+
+                }
+            });
         }
-        public void setDetails(Context ctx, String userName){
+        public void setDetails(Context ctx, String userName,String userNum){
             TextView user_name = mView.findViewById(R.id.name);
+            TextView user_num = mView.findViewById(R.id.num);
+
             //  ImageView user_image = mView.findViewById(R.id.profile_image);
 
             user_name.setText(userName);
+            user_num.setText(userNum);
             // Glide.with(ctx).load(userImage).placeholder(R.drawable.person_outline).into(user_image);
         }
 
