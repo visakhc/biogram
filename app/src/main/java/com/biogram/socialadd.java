@@ -35,7 +35,7 @@ public class socialadd extends AppCompatActivity {
         setContentView(R.layout.activity_socialadd);
 
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
-        root= db.getReference();
+        root= db.getReference().child("root");
 
 
         SharedPreferences sh = getSharedPreferences("biogram",MODE_PRIVATE);

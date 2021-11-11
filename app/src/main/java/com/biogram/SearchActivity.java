@@ -1,6 +1,7 @@
 package com.biogram;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,16 +20,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class SearchActivity  extends AppCompatActivity {
     private EditText mSearchField;
     private RecyclerView mResultList;
-    private DatabaseReference mUserDatabase;
-    private FirebaseDatabase mFirebaseDatabase;
-
+    private DatabaseReference root;
+    String phonenum;
 
 
     @Override
@@ -35,14 +41,21 @@ public class SearchActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search2);
 
-        mFirebaseDatabase= FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
-        mUserDatabase = mFirebaseDatabase.getReference();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
+        root = mFirebaseDatabase.getReference();
 
         mSearchField = findViewById(R.id.search_field);
         mResultList = findViewById(R.id.result_list);
 
         mResultList.setHasFixedSize(true);
         mResultList.setLayoutManager(new LinearLayoutManager(this));
+
+        SharedPreferences sh = getSharedPreferences("biogram",MODE_PRIVATE);
+        phonenum = sh.getString("phone", "");
+
+
+      //  whilenoinput();
+
 
         mSearchField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -69,11 +82,40 @@ public class SearchActivity  extends AppCompatActivity {
 
     }
 
+    private void whilenoinput() {
+     //   ArrayList<String> arr=new ArrayList<String>();
+     //   RecyclerView recyclerView = findViewById(R.id.recycleview);
+
+        root.child("root").child("users").child(phonenum).child("friends")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                DataSnapshot lastDataSnapshot = null;
+                Iterable<DataSnapshot>  iterable= snapshot.getChildren();
+                    for (DataSnapshot dataSnapshot : iterable) {
+                         lastDataSnapshot = dataSnapshot;
+                         String friends = Objects.requireNonNull(lastDataSnapshot.getValue()).toString();
+                         //  arr.add(friends);
+                    //friends has all the values of friends
+                    }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+             }
+        });
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
+       // myAdapter adapter = new myAdapter(this, arr);
+      //  recyclerView.setAdapter(adapter);
+    }
+
     public void firebaseUserSearch(String searchText) {
 
        // Toast.makeText(SearchActivity.this, "Started Search", Toast.LENGTH_LONG).show();
 
-        Query query = mUserDatabase.child("Users").orderByChild("name").startAt(searchText).endAt(searchText + "\uf8ff");
+        Query query = root.child("root").child("users").orderByChild("id").startAt(searchText).endAt(searchText + "\uf8ff");
 
         FirebaseRecyclerOptions<Users> options = new FirebaseRecyclerOptions.Builder<Users>().setQuery(query, Users.class).build();
 

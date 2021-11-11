@@ -19,8 +19,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -86,12 +89,6 @@ public class login extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
                 signInWithPhoneAuthCredential(phoneAuthCredential);
-//saving user to apps memry after succesfell login
-                SharedPreferences sharedPreferences = getSharedPreferences("biogram",MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                myEdit.putString("phone", ed1.getText().toString());
-                myEdit.apply();
-
             }
 
             @Override
@@ -248,8 +245,33 @@ public class login extends AppCompatActivity {
                     String phone= Objects.requireNonNull(firebaseAuth.getCurrentUser()).getPhoneNumber();
                     assert phone != null;
                     phone=phone.replace("+91","");
-                    root.child("root").child("users").child(phone).child("id").setValue(phone);
-                    Toast.makeText(login.this,"Logged in as"+phone,Toast.LENGTH_SHORT).show();
+
+                    //saving user to apps memry after succesfell login
+                    SharedPreferences sharedPreferences = getSharedPreferences("biogram",MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putString("phone",phone);
+                    myEdit.apply();
+
+                    String finalPhone = phone;
+                    root.child("root").child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.hasChild(finalPhone)) {
+                                //add the intent to the homepage here
+                                Toast.makeText(login.this,"user aldeary exist",Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                root.child("root").child("users").child(finalPhone).child("id").setValue(finalPhone);
+                                //add the intent to the add users name,age,shit here
+                                Toast.makeText(login.this,"Logged in as"+finalPhone,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(login.this,"db error",Toast.LENGTH_LONG).show();
+                        }
+                    });
                 })
                 .addOnFailureListener(e -> {
                     //on login failure

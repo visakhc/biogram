@@ -1,5 +1,6 @@
 package com.biogram;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -26,10 +28,14 @@ public class search extends AppCompatActivity {
     Button b;
     EditText t;
     RecyclerView recyclerView;
-public ArrayList<String> arr = new ArrayList<String>();
-    public ArrayList<String> tes = new ArrayList<String>();
+ArrayList<String> nam = new ArrayList<String>();
+ArrayList<String> mContacts;
+    RecyclerView mRecyclerView;
+    RecyclerView.LayoutManager mLayoutManager;
+    RecyclerView.Adapter mAdapter;
 
-  public   String s;
+
+  public   String phonenum,m;
   public   int index=0;
     FirebaseDatabase db = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
     DatabaseReference root = db.getReference();
@@ -42,9 +48,19 @@ public ArrayList<String> arr = new ArrayList<String>();
 
         b = findViewById(R.id.button);
         t = findViewById(R.id.searchphone);
-        recyclerView = findViewById(R.id.recycleview);
 
 
+        mRecyclerView=findViewById(R.id.recycler_view);
+        mContacts=new ArrayList<>();
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+
+
+
+
+
+        SharedPreferences sh = getSharedPreferences("biogram",MODE_PRIVATE);
+        phonenum = sh.getString("phone", "");
 
         b.setOnClickListener(v -> {
 /*
@@ -56,19 +72,20 @@ public ArrayList<String> arr = new ArrayList<String>();
 */
 
         });
-      //  search s=new search();
-//tes= s.
-        getcontactlist();
-   //   root.child("p03p").child(String.valueOf(index)).setValue(tes.get(index));
 
-    /* recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        myAdapter adapter = new myAdapter(this, arr);
-        recyclerView.setAdapter(adapter);
+       // getcontactlist();
 
-     */
-    }
 
-    public ArrayList<String> getcontactlist() {
+
+
+
+
+
+
+
+
+
+
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
         String sort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
         Cursor cursor = getContentResolver().query(uri, null, null, null, sort);
@@ -85,18 +102,19 @@ public ArrayList<String> arr = new ArrayList<String>();
                     number = number.replaceAll("-", "");
                     number = number.replace("+91", "");
                     if (number.length() == 10) {
-                     // serch(number);
+                        // serch(number);
                         String finalNumber = number;
                         root.child("root").child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 //String v = Objects.requireNonNull(snapshot.getValue()).toString();
-                                if (snapshot.hasChild(finalNumber)) {
-
-                                          arr.add(index,finalNumber);
-                                               // root.child("p5533p").child(String.valueOf(index)).setValue(arr.get(index));
-                                               index=index+1;
-
+                                if (snapshot.hasChild(finalNumber) && !finalNumber.equals(phonenum)) {
+                                    mContacts.add(finalNumber);
+                                    nam.add(name);
+                                    root.child("root").child("test").child("users").child(phonenum).child("friends").child(finalNumber).setValue(finalNumber);
+                                    mAdapter = new MainAdapter(mContacts,nam);
+                                    mRecyclerView.setLayoutManager(mLayoutManager);
+                                    mRecyclerView.setAdapter(mAdapter);
                                 }
                             }
                             @Override
@@ -104,15 +122,24 @@ public ArrayList<String> arr = new ArrayList<String>();
                                 Toast.makeText(getApplicationContext(), "No contacts are on biogram", Toast.LENGTH_SHORT).show();
                             }
                         });
+
                     }
 
                 }
-                    phonecursor.close();
-                }
+                phonecursor.close();
             }
-            cursor.close();
-        return arr;
+        }
+        cursor.close();
+
+
+
+
+
     }
+
+   // public void getcontactlist() {
+
+  //  }
 
 }
 
