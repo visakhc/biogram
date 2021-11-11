@@ -3,19 +3,16 @@ package com.biogram;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,68 +20,75 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class search extends AppCompatActivity {
-    Button b;
-    EditText t;
-    RecyclerView recyclerView;
-ArrayList<String> nam = new ArrayList<String>();
-ArrayList<String> mContacts;
-    RecyclerView mRecyclerView;
+public class HomePage extends AppCompatActivity implements MainAdapter.OnEachListener{
+    public MaterialButton refresh;
+
+    private RecyclerView mResultList;
+    private DatabaseReference root;
+    String phonenum;
+    ArrayList<String> frndname =new ArrayList<>();
+    ArrayList<String> frndnum =new ArrayList<>();
+
     RecyclerView.LayoutManager mLayoutManager;
-    RecyclerView.Adapter mAdapter;
-
-
-  public   String phonenum,m;
-  public   int index=0;
-    FirebaseDatabase db = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
-    DatabaseReference root = db.getReference();
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    RecyclerView.Adapter<MainAdapter.ViewHolder> mAdapter;
+    FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-
-        b = findViewById(R.id.button);
-        t = findViewById(R.id.searchphone);
-
-
-        mRecyclerView=findViewById(R.id.recycler_view);
-        mContacts=new ArrayList<>();
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-
-
-
+        setContentView(R.layout.activity_home_page);
 
 
         SharedPreferences sh = getSharedPreferences("biogram",MODE_PRIVATE);
         phonenum = sh.getString("phone", "");
+        root = mFirebaseDatabase.getReference();
 
-        b.setOnClickListener(v -> {
-/*
-            Intent intent = new Intent(search.this, MainActivity.class);
-            intent.putExtra("phone",t.getText().toString());
-            intent.putExtra("from","search"); //add the other to normal socialadd view
-            startActivity(intent);
+        mResultList = findViewById(R.id.recycler_v);
+        mResultList.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
 
-*/
+        friends();
 
-        });
 
-       // getcontactlist();
+    refresh=findViewById(R.id.refresh);
+    refresh.setOnClickListener(v -> refresh());
 
 
 
+    }
 
+    private void friends() {
+        //this function fills the recycler view with numbers and names of your friends on db
+        root.child("root").child("users").child(phonenum).child("friends")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        DataSnapshot lastDataSnapshot;
+                        Iterable<DataSnapshot>  iterable= snapshot.getChildren();
+                        for (DataSnapshot dataSnapshot : iterable) {
+                            lastDataSnapshot = dataSnapshot;
+                            String friends = Objects.requireNonNull(lastDataSnapshot.getValue()).toString();
+                            String num=lastDataSnapshot.getKey();
 
+                            frndname.add(friends);
+                            frndnum.add(num);
 
+                            mAdapter=new MainAdapter(frndname,frndnum,HomePage.this);
+                            mResultList.setLayoutManager(mLayoutManager);
+                            mResultList.setAdapter(mAdapter);
+                        }
 
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getApplicationContext(), "error on func friends", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
-
-
+    private void refresh() {
 
         Uri uri = ContactsContract.Contacts.CONTENT_URI;
         String sort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
@@ -102,19 +106,13 @@ ArrayList<String> mContacts;
                     number = number.replaceAll("-", "");
                     number = number.replace("+91", "");
                     if (number.length() == 10) {
-                        // serch(number);
                         String finalNumber = number;
                         root.child("root").child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                //String v = Objects.requireNonNull(snapshot.getValue()).toString();
                                 if (snapshot.hasChild(finalNumber) && !finalNumber.equals(phonenum)) {
-                                    mContacts.add(finalNumber);
-                                    nam.add(name);
-                                    root.child("root").child("test").child("users").child(phonenum).child("friends").child(finalNumber).setValue(finalNumber);
-                                    mAdapter = new MainAdapter(mContacts,nam);
-                                    mRecyclerView.setLayoutManager(mLayoutManager);
-                                    mRecyclerView.setAdapter(mAdapter);
+                                    root.child("root").child("users")
+                                            .child(phonenum).child("friends").child(finalNumber).setValue(name);
                                 }
                             }
                             @Override
@@ -122,26 +120,16 @@ ArrayList<String> mContacts;
                                 Toast.makeText(getApplicationContext(), "No contacts are on biogram", Toast.LENGTH_SHORT).show();
                             }
                         });
-
                     }
-
                 }
                 phonecursor.close();
             }
         }
         cursor.close();
-
-
-
-
-
     }
 
-   // public void getcontactlist() {
-
-  //  }
-
+    @Override
+    public void OnEachClick(int position) {
+        Toast.makeText(getApplicationContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+    }
 }
-
-
-

@@ -16,6 +16,12 @@
         android:theme="@style/Theme.Biogram"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".SearchPage"
+            android:exported="true" />
+        <activity
+            android:name=".HomePage"
+            android:exported="true" />
+        <activity
             android:name=".SearchActivity"
             android:exported="true" />
         <activity

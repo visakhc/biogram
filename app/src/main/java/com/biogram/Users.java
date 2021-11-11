@@ -1,29 +1,29 @@
 package com.biogram;
 
 public class Users {
-    public String name;
-    public String imageurl;
+    public String id;
+   // public String imageurl;
     public Users(){
     }
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
 
-    public String getImageurl() {
-        return imageurl;
-    }
+    //public String getImageurl() {
+      //  return imageurl;
+    //}
 
-    public void setImageurl(String image) {
-        this.imageurl = image;
-    }
+  //  public void setImageurl(String image) {
+        //this.imageurl = image;
+ //   }
 
-    public Users(String name, String summary, String imageurl) {
-        this.name = name;
-        this.imageurl = imageurl;
+    public Users(String id) {
+        this.id = id;
+      //  this.imageurl = imageurl;
     }
 }

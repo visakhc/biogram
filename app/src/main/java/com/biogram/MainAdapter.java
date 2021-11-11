@@ -13,40 +13,55 @@ import java.util.ArrayList;
 
     public class MainAdapter extends RecyclerView.Adapter<com.biogram.MainAdapter.ViewHolder> {
 
-        ArrayList<String> mContacts;
-        ArrayList<String> nam;
+        ArrayList<String> frndname;
+        ArrayList<String> frndnum;
 
-        public MainAdapter(ArrayList<String> mContacts, ArrayList<String> nam) {
-            this.mContacts = mContacts;
-            this.nam = nam;
+        OnEachListener mOnEachListener;
+
+        public MainAdapter(ArrayList<String> frndname,ArrayList<String> frndnum, OnEachListener OnEachListener) {
+            this.frndname = frndname;
+            this.frndnum = frndnum;
+            this.mOnEachListener=OnEachListener;
         }
 
         @NonNull
         @Override
         public com.biogram.MainAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_list_layout, parent, false);
-            return new ViewHolder(view);
+            return new ViewHolder(view,mOnEachListener);
         }
 
         @Override
         public void onBindViewHolder(@NonNull com.biogram.MainAdapter.ViewHolder holder, int position) {
-            holder.mName.setText(mContacts.get(position));
-            holder.mN.setText(nam.get(position));
+            holder.mName.setText(frndname.get(position));
+            holder.mNum.setText(frndnum.get(position));
+
         }
 
         @Override
         public int getItemCount() {
-            return mContacts.size();
+            return frndname.size();
         }
 
-        public static class ViewHolder extends RecyclerView.ViewHolder {
-            public TextView mName,mN;
+        public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            public TextView mName,mNum;
+            OnEachListener OnEachListener;
 
-            public ViewHolder(@NonNull View itemView) {
+            public ViewHolder(@NonNull View itemView,OnEachListener OnEachListener) {
                 super(itemView);
                 mName = itemView.findViewById(R.id.name);
-                mN = itemView.findViewById(R.id.m);
+                mNum = itemView.findViewById(R.id.num);
+                this.OnEachListener=OnEachListener;
+                itemView.setOnClickListener(this);
             }
+
+            @Override
+            public void onClick(View v) {
+                OnEachListener.OnEachClick(getAdapterPosition());
+            }
+        }
+        public interface OnEachListener{
+            void OnEachClick(int position);
         }
 
 }
