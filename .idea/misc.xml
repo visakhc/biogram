@@ -20,6 +20,7 @@
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/drawable/save.xml" value="0.21196581196581196" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/drawable/userimg.xml" value="0.21196581196581196" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/a.xml" value="0.1" />
+        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/activity_home.xml" value="0.15868055555555555" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/activity_home_page.xml" value="0.1" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/activity_login.xml" value="0.16145833333333334" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/activity_main.xml" value="0.15868055555555555" />
@@ -32,6 +33,9 @@
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/activity_test.xml" value="0.16145833333333334" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/activity_tst.xml" value="0.1962025316455696" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/fragment_blank.xml" value="0.15868055555555555" />
+        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/fragment_contact.xml" value="0.1" />
+        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/list_items.xml" value="0.15868055555555555" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/list_layout.xml" value="0.15868055555555555" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/look1.xml" value="0.1" />
@@ -39,6 +43,7 @@
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/row.xml" value="0.15868055555555555" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/layout/search_list_layout.xml" value="0.264" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Biogram/app/src/main/res/menu/tabs.xml" value="0.1" />
       </map>
     </option>
   </component>

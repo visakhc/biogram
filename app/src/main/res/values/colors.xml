@@ -8,5 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorGray">#f7f4f6</color>
+<!--
     <color name="mybg">#F5F5F5</color>
+-->
+    <color name="mybg">#FFFFFFFF</color>
+
 </resources>

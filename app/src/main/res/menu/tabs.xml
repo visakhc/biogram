@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/tab_bread"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="HOME" />
+    <item
+        android:id="@+id/tab_alarm"
+        android:icon="?android:attr/actionModeWebSearchDrawable"
+        android:title="SEARCH" />
+    <item
+        android:id="@+id/tab_home"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="PROFILE" />
+
+</menu>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="frags.home">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="20dp"
+        android:background="@drawable/rounded_black_bg"
+        tools:ignore="MissingConstraints">
+
+            <nl.joery.animatedbottombar.AnimatedBottomBar
+                android:id="@+id/bottom_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFF"
+                app:abb_badgeBackgroundColor="#FFFFFF"
+                app:abb_badgeTextColor="#2196F3"
+                app:abb_indicatorAppearance="round"
+                app:abb_indicatorColor="#2196F3"
+                app:abb_indicatorHeight="4dp"
+                app:abb_indicatorLocation="bottom"
+                app:abb_tabAnimation="slide"
+                app:abb_tabAnimationSelected="slide"
+                app:abb_animationInterpolator="@android:anim/overshoot_interpolator"
+                app:abb_indicatorMargin="16dp"
+                app:abb_rippleColor="#2196F3"
+                app:abb_rippleEnabled="true"
+                app:abb_selectedIndex="0"
+                app:abb_selectedTabType="text"
+                app:abb_tabColor="#000000"
+                app:abb_tabColorSelected="#2196F3"
+                app:abb_tabs="@menu/tabs"
+                app:cardCornerRadius="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>
+
+
