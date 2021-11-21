@@ -15,6 +15,7 @@ import com.biogram.R;
 import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class home extends AppCompatActivity {
+
     private static final String TAG = MainActivity.class.getSimpleName() ;
     AnimatedBottomBar animatedBottomBar;
     FragmentManager fragmentManager;
@@ -31,7 +32,6 @@ public class home extends AppCompatActivity {
 
         animatedBottomBar = findViewById(R.id.bottom_bar);
         animatedBottomBar.selectTabById(R.id.tab_bread,true);
-
         animatedBottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
             @Override
             public void onTabSelected(int lastIndex, @Nullable AnimatedBottomBar.Tab lastTab,
@@ -69,4 +69,4 @@ public class home extends AppCompatActivity {
     }
 }
 
-
+//TODO menu option on homefragment

@@ -8,5 +8,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="search_by_phone_number"><font size="13"> <i> search by phone number </i> </font> </string>
 
 </resources>

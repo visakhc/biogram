@@ -16,13 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.biogram.R;
-import com.biogram.Users;
 import com.biogram.profile;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 import soup.neumorphism.NeumorphButton;
 
@@ -35,11 +31,12 @@ public class searchFragment extends Fragment {
     DatabaseReference root;
     RecyclerView mResultList;
     EditText mSearchField;
+    String searchText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-// Inflate the layout for this fragment
+// Inflates the layout for this fragment
         view = inflater.inflate(R.layout.fragment_search, container, false);
 
       FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
@@ -59,9 +56,11 @@ public class searchFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchText = mSearchField.getText().toString();
+               searchText = mSearchField.getText().toString();
 
        firebaseUserSearch(searchText);
+       Thread thread=new Thread(runnable);
+       thread.start();
 
             }
 
@@ -75,32 +74,14 @@ public class searchFragment extends Fragment {
 
         return view;
     }
+    Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+//commit a git before runnable TODO
+        }
+    };
 
     public void firebaseUserSearch(String searchText) {
-        Query query;
-        //Toast.makeText(SearchActivity.this, "Started Search", Toast.LENGTH_LONG).show();
-        if(searchText.isEmpty()){
-            query = root.child("invalidating!query!thisway,becauseidonnowhatelsetodo:)");
-        }else {
-            query = root.child("root").child("users").orderByChild("id").startAt(searchText).endAt(searchText + "\uf8ff");
-        }
-
-        FirebaseRecyclerOptions<Users> options = new FirebaseRecyclerOptions.Builder<Users>().setQuery(query, Users.class).build();
-        FirebaseRecyclerAdapter<Users, searchFragment.UsersViewHolder> adapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {
-            @Override
-            public searchFragment.UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_list_layout, parent, false);
-                return new UsersViewHolder(view);
-            }
-
-            @Override
-            protected void onBindViewHolder(searchFragment.UsersViewHolder holder, int position, Users model) {
-                holder.setDetails(getActivity(),model.getName(),model.getId());
-            }
-        };
-
-        adapter.startListening();
-        mResultList.setAdapter(adapter);
 
     }
 

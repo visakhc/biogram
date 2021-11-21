@@ -9,18 +9,66 @@
     android:orientation="vertical">
 
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/refresh"
-        android:layout_width="match_parent"
+    <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+        <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="refresh"
-        android:textAllCaps="false"/>
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="cursive"
+        android:text="@string/app_name"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:theme="@style/Theme.appnamecust" />
+
+
+        <androidx.appcompat.widget.Toolbar
+        android:id="@+id/options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="cursive"
+        android:text="@string/app_name"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:theme="@style/Theme.appnamecust"
+        android:layout_gravity="end"/>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:textSize="15sp"
+            android:text="friends on biogram"
+            android:textColor="@color/black"
+            />
+
+    </FrameLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/refreshlayout"
+        android:layout_marginTop="10dp"
+        >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_v"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-      />
+        android:overScrollMode="never"
 
+        />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

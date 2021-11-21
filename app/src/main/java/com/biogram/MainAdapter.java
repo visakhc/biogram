@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
         ArrayList<String> frndname;
         ArrayList<String> frndnum;
-
         OnEachListener mOnEachListener;
 
         public MainAdapter(ArrayList<String> frndname,ArrayList<String> frndnum, OnEachListener OnEachListener) {

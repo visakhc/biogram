@@ -82,9 +82,6 @@ public class login extends AppCompatActivity {
 
 
 
-
-
-
         mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {

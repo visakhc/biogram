@@ -17,11 +17,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.biogram.MainAdapter;
 import com.biogram.R;
 import com.biogram.profile;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,25 +31,27 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class homeFragment extends Fragment  implements MainAdapter.OnEachListener{
+public class homeFragment extends Fragment implements MainAdapter.OnEachListener {
     View view;
-    public MaterialButton refresh;
-
     private RecyclerView mResultList;
     private DatabaseReference root;
     String phonenum;
     ArrayList<String> frndname =new ArrayList<>();
     ArrayList<String> frndnum =new ArrayList<>();
 
+    SwipeRefreshLayout swipe;
+
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter<MainAdapter.ViewHolder> mAdapter;
 
-    FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
+    FirebaseDatabase mFirebaseDatabase =
+            FirebaseDatabase.getInstance("https://biogram-63868-default-rtdb.asia-southeast1.firebasedatabase.app");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
 
         SharedPreferences sh = requireActivity().getSharedPreferences("biogram", MODE_PRIVATE);
 
@@ -59,17 +61,73 @@ public class homeFragment extends Fragment  implements MainAdapter.OnEachListene
         mResultList = view.findViewById(R.id.recycler_v);
         mResultList.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext());
-
         friends();
+        swipe=view.findViewById(R.id.refreshlayout);
+        swipe.setOnRefreshListener(() -> {
+          //  refresh();
+            Thread thread=new Thread(runnable);
+            thread.start();
+            swipe.post(this::friends);
+            swipe.setRefreshing(false);
+        });
+
+        swipe.setColorSchemeResources(android.R.color.holo_blue_dark,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_red_dark);
 
 
-        refresh = view.findViewById(R.id.refresh);
-        refresh.setOnClickListener(v -> refresh());
 
         return view;
 
     }
-        private void friends() {
+
+
+Runnable runnable=new Runnable() {
+    @Override
+    public void run() {
+
+        Uri uri = ContactsContract.Contacts.CONTENT_URI;
+        String sort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
+        Cursor cursor = requireActivity().getApplicationContext().getContentResolver().query(uri, null, null, null, sort);
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                Uri uriphone = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+                String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " =?";
+                Cursor phonecursor = requireActivity().getContentResolver().query(uriphone, null, selection, new String[]{id}, null);
+                if (phonecursor.moveToNext()) {
+                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                    String number = phonecursor.getString(phonecursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    number = number.replaceAll("\\s+", "");
+                    number = number.replaceAll("-", "");
+                    number = number.replace("+91", "");
+                    if (number.length() == 10) {
+                        String finalNumber = number;
+                        root.child("root").child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.hasChild(finalNumber) && !finalNumber.equals(phonenum)) {
+                                    root.child("root").child("users")
+                                            .child(phonenum).child("friends").child(finalNumber).setValue(name);
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                Toast.makeText(getContext(), "No contacts are on biogram", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                phonecursor.close();
+            }
+        }
+        cursor.close();
+    }
+};
+
+        public void friends() {
             //this function fills the recycler view with numbers and names of your friends on db
             root.child("root").child("users").child(phonenum).child("friends")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -81,10 +139,14 @@ public class homeFragment extends Fragment  implements MainAdapter.OnEachListene
                                 lastDataSnapshot = dataSnapshot;
                                 String friends = Objects.requireNonNull(lastDataSnapshot.getValue()).toString();
                                 String num=lastDataSnapshot.getKey();
-
-                                frndname.add(friends);
-                                frndnum.add(num);
-
+                                if(frndname.contains(friends)){}
+                                else {
+                                    frndname.add(friends);
+                                    }
+                                if(frndname.contains(num)){}
+                                else {
+                                    frndnum.add(num);
+                                }
                                 mAdapter=new MainAdapter(frndname,frndnum,homeFragment.this);
                                 mResultList.setLayoutManager(mLayoutManager);
                                 mResultList.setAdapter(mAdapter);
@@ -99,47 +161,7 @@ public class homeFragment extends Fragment  implements MainAdapter.OnEachListene
                     });
         }
 
-        private void refresh() {
-
-            Uri uri = ContactsContract.Contacts.CONTENT_URI;
-            String sort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
-            Cursor cursor = requireActivity().getApplicationContext().getContentResolver().query(uri, null, null, null, sort);
-            if (cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    Uri uriphone = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-                    String selection = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " =?";
-                    Cursor phonecursor = requireActivity().getContentResolver().query(uriphone, null, selection, new String[]{id}, null);
-                    if (phonecursor.moveToNext()) {
-                        String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        String number = phonecursor.getString(phonecursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        number = number.replaceAll("\\s+", "");
-                        number = number.replaceAll("-", "");
-                        number = number.replace("+91", "");
-                        if (number.length() == 10) {
-                            String finalNumber = number;
-                            root.child("root").child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.hasChild(finalNumber) && !finalNumber.equals(phonenum)) {
-                                        root.child("root").child("users")
-                                                .child(phonenum).child("friends").child(finalNumber).setValue(name);
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getContext(), "No contacts are on biogram", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                    phonecursor.close();
-                }
-            }
-            cursor.close();
-        }
-
-        @Override
+      @Override
         public void OnEachClick(int position) {
             //intent to profile mainactivity here
             String num=frndnum.get(position);
@@ -149,6 +171,6 @@ public class homeFragment extends Fragment  implements MainAdapter.OnEachListene
             startActivity(i);
 
         }
-    }
+}
 
 
